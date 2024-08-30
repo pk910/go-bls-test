@@ -6,6 +6,7 @@ import (
 	"log"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	hbls "github.com/herumi/bls-eth-go-binary/bls"
 	"github.com/tyler-smith/go-bip39"
@@ -35,7 +36,25 @@ func main() {
 	fmt.Printf("BLS version: %v\n", blsVersion)
 	fmt.Printf("BLS test: ")
 
-	errs := testBlsMath()
+	var errs []error
+	errsMtx := sync.Mutex{}
+
+	var wg sync.WaitGroup
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			err := testBlsMath()
+
+			if len(err) > 0 {
+				errsMtx.Lock()
+				errs = append(errs, err...)
+				errsMtx.Unlock()
+			}
+		}()
+	}
+	wg.Wait()
+
 	if len(errs) > 0 {
 		fmt.Printf("failed\n")
 
