@@ -3,7 +3,7 @@ module github.com/pk910/go-bls-test
 go 1.22.4
 
 require (
-	github.com/herumi/bls-eth-go-binary v1.33.0
+	github.com/herumi/bls-eth-go-binary v1.34.0
 	github.com/tyler-smith/go-bip39 v1.1.0
 	github.com/wealdtech/go-eth2-util v1.8.2
 )
